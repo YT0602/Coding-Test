@@ -1,10 +1,9 @@
 import sys
-from collections import deque
 
 N = int(sys.stdin.readline())
-st = deque()
+st = []
 for _ in range(N):
-    name= list(sys.stdin.readline().split())
+    name= sys.stdin.readline().split()
     if name[0] == 'push':
         st.append(int(name[1]))
     if name[0] == 'pop':
