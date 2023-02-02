@@ -1,4 +1,4 @@
-# [D3] 1206. View
+# [D3] 1206. [파이썬 SW 문제해결 기본] 1일차 - View
 
 [문제 링크](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV134DPqAA8CFAYh) 
 
