@@ -1,3 +1,6 @@
+import sys
+input = sys.stdin.readline
+
 lazer = list(input())
 stack = []
 # 잘린 조각
