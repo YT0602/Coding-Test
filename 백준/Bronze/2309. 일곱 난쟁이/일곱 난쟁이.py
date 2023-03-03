@@ -1,17 +1,18 @@
-import sys
-from itertools import combinations
+lst = []
+for i in range(9):
+    lst.append(int(input()))
 
-input = sys.stdin.readline
+lst.sort()
 
-nan = []
-for i in range(9):  # 난쟁이들 키 추가
-    height = int(input())
-    nan.append(height)
+def solve():
+    for i in range(9):
+        for j in range(i+1, 9):
+            if 100 == sum(lst) - (lst[i] + lst[j]):
+                lst.pop(j)
+                lst.pop(i)
+                return lst
 
-nan.sort()  # 오름차순 정렬
-result = list(combinations(nan, 7))  # 7명씩 조합 경우의 수
-for j in result:  # 경우의 수 중에 합이 100이면 하나씩 출력
-    if sum(j) == 100:
-        for k in j:
-            print(k)
-        break
+
+result = solve()
+for a in result:
+    print(a)
