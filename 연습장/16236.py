@@ -1,64 +1,80 @@
 import sys
+
 input = sys.stdin.readline
 from collections import deque
 
 
 def hunt(r, c, size):
     global cnt
-    catch = 0
+    global catch
     q.append((r, c))
-
+    # 시작점 방문처리
     v = [[0] * N for _ in range(N)]
     v[r][c] = 1
     while q:
         si, sj = q.popleft()
+
         for k in range(4):
             ni = si + dx[k]
             nj = sj + dy[k]
             # 범위 안에 있고 사이즈 이하면 이동
-            if 0 <= ni < N and 0 <= nj < N:
-                if arr[ni][nj] <= size:
-                    if v[ni][nj] == 0:
-                        # 이동거리 표시
-                        v[ni][nj] = v[si][sj] + 1
+            if 0 <= ni < N and 0 <= nj < N and arr[ni][nj] <= size:
+                if v[ni][nj] == 0:
+                    # 이동거리 표시
+                    v[ni][nj] = v[si][sj] + 1
+                    if food:
+                        # 이동거리가 먹이위치보다 멀어지면 건너뜀
+                        if v[ni][nj] > food[-1][-1]:
+                            continue
+                        else:
+                            q.append((ni, nj))
+                    else:
                         q.append((ni, nj))
-                        # 이동 위치가 0이 아니고 사이즈보다 작으면 이동해서 잡아먹음
-                        if arr[ni][nj] != 0 and arr[ni][nj] < size:
-                            catch += 1
-                            # 이동시간 추가
-                            cnt += v[ni][nj]-1
-                            # 잡아먹어서 물고기 사라짐
-                            arr[ni][nj] = 0
-                            # 잡아먹은 수가 사이즈만큼이면 성장
-                            if catch == size:
-                                size += 1
-                                catch = 0
-                            # 이동위치에서 새로 시작
-                            q.clear()
-                            mn_dis = v[ni][nj]
-                            DFS(ni, nj, 0)
-                            v = [[0] * N for _ in range(N)]
-                            v[ni][nj] = 1
-                            break
+
+                    # 이동 위치가 0이 아니고 사이즈보다 작으면
+                    if arr[ni][nj] != 0 and arr[ni][nj] < size:
+                        if food:
+                            # 이동거리가 먹이 위치 이하면 리스트 추가
+                            if v[ni][nj] <= food[-1][-1]:
+                                food.append((ni, nj, v[ni][nj]))
+
+                        else:
+                            food.append((ni, nj, v[ni][nj]))
+    if food:
+        ni, nj = catch_near()
+        catch += 1
+        # 이동시간 추가
+        cnt += v[ni][nj] - 1
+        # 잡아먹어서 물고기 사라짐
+        arr[ni][nj] = 0
+        # 잡아먹은 수가 사이즈만큼이면 성장
+        if catch == size:
+            size += 1
+            catch = 0
+        # 이동위치에서 새로 시작
+        q.clear()
+        food.clear()
+        hunt(ni, nj, size)
 
 
-def DFS(r, c, dis):
-    if dis >
-    for k in range(4):
-        ni = r + dx[k]
-        nj = c + dy[k]
-        # 범위 안에 있고 사이즈 이하면 이동
-        if 0 <= ni < N and 0 <= nj < N:
+# 제일 위, 제일 왼쪽이 우선으로 정렬
+def catch_near():
+    food.sort(key=lambda x: (x[0], x[1]))
+    return food[0][0], food[0][1]
 
 
 N = int(input())
 arr = [list(map(int, input().split())) for _ in range(N)]
 q = deque()
+food = []
 dx = [-1, 0, 0, 1]
 dy = [0, -1, 1, 0]
 cnt = 0
+catch = 0
 for i in range(N):
     for j in range(N):
         if arr[i][j] == 9:
+            # 시작점 0
+            arr[i][j] = 0
             hunt(i, j, 2)
 print(cnt)
