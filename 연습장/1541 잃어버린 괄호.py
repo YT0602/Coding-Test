@@ -1,6 +1,8 @@
 num = ''
 cal = []
 numbers = []
+
+# 연산자와 숫자 분리
 for i in input():
     if i.isdigit():
         num += i
@@ -10,28 +12,21 @@ for i in input():
         num = ''
 numbers.append(int(num))
 
-result = [numbers[0]]
-ans = 0
-if len(cal) == 1:
-    if cal[0] == '+':
-        print(numbers[0]+numbers[1])
+# + 연산만 실행해서 리스트에 추가, - 연산이면 그냥 추가
+result = []
+tmp = numbers[0]
+for i in range(len(cal)):
+    if cal[i] == '-':
+        result.append(tmp)
+        tmp = numbers[i+1]
+
     else:
-        print(numbers[0]-numbers[1])
-else:
-    for i in range(len(cal)):
-        if cal[i] == '-':
+        tmp += numbers[i+1]
 
-            for j in range(len(result)):
-                ans += result.pop(0)
-            result.append(ans)
-            ans = 0
-            result.append('-')
-            result.append(numbers[i + 1])
+# - 연산 실행
+result.append(tmp)
+ans = result[0]
+for i in range(1, len(result)):
+    ans -= result[i]
 
-        else:
-            result.append(numbers[i+1])
-
-
-print(cal)
-print(numbers)
-print(result)
+print(ans)
