@@ -14,7 +14,7 @@ def mat_pow(list1, list2):
         for j in range(2):
             for k in range(2):
                 # 나머지 분배법칙
-                mat2[i][j] += (list1[i][k] * list2[k][j]) % 1000000007
+                mat2[i][j] += (list1[i][k] * list2[k][j]) % 1000000
     return mat2
 
 
@@ -36,6 +36,6 @@ result = mat_fibo(N)
 # 결과값 나머지로 변환
 for x in range(2):
     for y in range(2):
-        result[x][y] %= 1000000007
+        result[x][y] %= 1000000
 # F(n) 출력
 print(result[0][1])
