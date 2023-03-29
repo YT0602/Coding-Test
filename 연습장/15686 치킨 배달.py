@@ -71,3 +71,5 @@ else:
     mn_cnt = min(cnt, mn_cnt)
 
 print(mn_cnt)
+
+
