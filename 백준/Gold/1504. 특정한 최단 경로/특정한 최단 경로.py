@@ -1,46 +1,41 @@
 import sys
+input = sys.stdin.readline
 import heapq
-inpuy = sys.stdin.readline
 
-N, E = map(int, input().split())
-graph = [[] for _ in range(N+1)]
-# 그래프 연결
-for i in range(E):
-    S, E, dis = map(int, input().split())
-    graph[S].append([E, dis])
-    graph[E].append([S, dis])
-x, y = map(int, input().split())
-INF = int(1e9)
+n, m = map(int, input().split())
+graph = [[] for i in range(n+1)]
+inf = int(1e9)
 
+for i in range(m):
+    a, b, c = map(int, input().split())
+    graph[a].append([b, c])
+    graph[b].append([a, c])
 
-def daik(num):
-    road = [INF] * (N + 1)
-    q = []
-    # 시작 배열 추가하고 거리 0
-    heapq.heappush(q, (0, num))
-    road[num] = 0
+v1, v2 = map(int, input().split())
 
-    while q:
-        dis, cur = heapq.heappop(q)
-        # 방문했었다면 건너뜀
-        if road[cur] < dis:
+def dijkstra(startnode, target):
+    dist = [inf for i in range(n + 1)]
+    dist[startnode] = 0
+    que = []
+    heapq.heappush(que, (dist[startnode], startnode))
+
+    while que:
+        cost, node = heapq.heappop(que)
+
+        if dist[node] < cost:
             continue
-        for j in graph[cur]:
-            # 최단거리 갱신
-            new = dis + j[1]
-            if new < road[j[0]]:
-                road[j[0]] = new
-                heapq.heappush(q, (new, j[0]))
-    return road
+        for newnode, newcost in graph[node]:
+            temp = newcost + cost
+            if temp < dist[newnode]:
+                dist[newnode] = temp
+                heapq.heappush(que, (temp, newnode))
 
+    return dist[target]
 
-node1 = daik(1)
-node_x = daik(x)
-node_y = daik(y)
-# 1 - x - y - N, 1 - y - x - N 중에 작은 값
-ans = min(node1[x] + node_x[y] + node_y[N], node1[y] + node_y[x] + node_x[N])
+a = dijkstra(1, v1) + dijkstra(v1, v2) + dijkstra(v2, n)
+b = dijkstra(1, v2) + dijkstra(v2, v1) + dijkstra(v1, n)
 
-if ans < INF:
-    print(ans)
-else:
+if a >= inf and b >= inf:
     print(-1)
+else:
+    print(min(a, b))
