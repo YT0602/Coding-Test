@@ -1,5 +1,3 @@
-from itertools import combinations
-from copy import deepcopy
 from _collections import deque
 
 
@@ -11,7 +9,8 @@ def check(lab_tmp):  # 오염 안된 구역이 있는지 없는지 확인
     else:
         return True
 
-def comb(arr, n):
+
+def comb(arr, n):  # 조합
     result = []
     if n > len(arr):
         return result
@@ -24,9 +23,10 @@ def comb(arr, n):
                 result.append([arr[i]] + j)
     return result
 
+
 def infection(virus):
     global min_time
-    tmp_lab = deepcopy(lab)
+    tmp_lab = [a[:] for a in lab]
     virus = deque(virus)
     for i, j in virus:  # 처음 활성화 시킬 바이러스를 0으로 초기화 해주고
         tmp_lab[i][j] = 0
@@ -67,7 +67,6 @@ def infection(virus):
 n, m = map(int, input().split())
 lab = [input().split() for _ in range(n)]
 min_time = 2500
-
 
 virus_all = []  # 모든 바이러스의 위치를 저장
 virus_count = 0  # 바이러스의 개수 -> 나중에 바이러스 퍼뜨릴 때 바이러스가 이미 다 퍼져있음에도 비활성화된 바이러스로 퍼져가려는 것을 막기 위해!
