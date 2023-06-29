@@ -1,90 +1,81 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 class Edge implements Comparable<Edge> {
 	int start;
 	int end;
-	int weight;
-
-	Edge(int start, int end, int weight) {
+	int cost;
+	
+	Edge(int start, int end, int cost) {
 		this.start = start;
 		this.end = end;
-		this.weight = weight;
+		this.cost = cost;
 	}
-
+	// cost 기준으로 정렬
 	@Override
 	public int compareTo(Edge o) {
-		return weight - o.weight;
+		return this.cost - o.cost;
 	}
-
 }
 
 public class Main {
-	static int[] parent;
 	static ArrayList<Edge> edgeList;
-
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		StringTokenizer st;
-
-		int N = Integer.parseInt(br.readLine());
-		int M = Integer.parseInt(br.readLine());
-
+	static int[] parent; // 각 노드 부모 노드 배열
+	
+	public static void main(String[] args)throws IOException {
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		
+		int N = Integer.parseInt(bf.readLine());
+		int M = Integer.parseInt(bf.readLine());
+		
 		edgeList = new ArrayList<>();
-		for (int i = 0; i < M; i++) {
-			st = new StringTokenizer(br.readLine());
+		
+		StringTokenizer st;
+		for (int i=0; i<M; i++) {
+			// 시작점, 끝점, 비용 저장
+			st = new StringTokenizer(bf.readLine());
 			int start = Integer.parseInt(st.nextToken());
 			int end = Integer.parseInt(st.nextToken());
-			int weight = Integer.parseInt(st.nextToken());
-
-			edgeList.add(new Edge(start, end, weight));
+			int cost = Integer.parseInt(st.nextToken());
+			
+			edgeList.add(new Edge(start, end, cost));
 		}
-
-		parent = new int[N + 1];
-		for (int i = 1; i <= N; i++) {
+		// 노드 부모를 자기 자신으로 초기화
+		parent = new int[N+1];
+		for (int i=1; i<=N; i++) {
 			parent[i] = i;
 		}
-
+		
 		Collections.sort(edgeList);
-
+		
 		int ans = 0;
-		for (int i = 0; i < edgeList.size(); i++) {
+		for (int i=0; i<edgeList.size(); i++) {
 			Edge edge = edgeList.get(i);
-
-			// 사이클이 발생하는 간선은 제외.
-			if (find(edge.start) != find(edge.end)) {
-				ans += edge.weight;
+			
+			// 두 노드의 root가 같지 않다면, 사이클이 발생하지 않으므로 union 연산을 수행하고 비용을 더하기
+			if (find(edge.start)!= find(edge.end)) {
+				ans += edge.cost;
 				union(edge.start, edge.end);
 			}
 		}
-
-		bw.write(ans + "\n");
-		bw.flush();
-		bw.close();
-		br.close();
+		
+		System.out.println(ans);
 	}
-
+	// find 연산 x가 속한 집합의 root를 찾아 반환
 	public static int find(int x) {
 		if (x == parent[x]) {
 			return x;
 		}
-
+		
 		return parent[x] = find(parent[x]);
 	}
-
+	// union 연산 두 집합을 하나로 합치기
 	public static void union(int x, int y) {
 		x = find(x);
 		y = find(y);
-
-		if (x != y) {
-			parent[y] = x;
+		
+		if(x!=y) {
+			parent[y] = x; // y의 root를 x의 root로 변경
 		}
 	}
 
